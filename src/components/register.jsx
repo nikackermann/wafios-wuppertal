@@ -10,6 +10,7 @@ import {
     Input,
     Link,
 } from '@nextui-org/react';
+import { Chip } from '@nextui-org/react';
 import React from 'react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { useState } from 'react';
@@ -45,41 +46,39 @@ const timeOptions = [
 
 export default function Register() {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
-    const [values, setValues] = React.useState(new Set([]));
+    const [changeHandlerCounter, setChangeHandlerCounter] = useState(0);
     const [payload, setPayload] = React.useState({
         name: '',
         email: '',
         company: '',
+        times: '',
     });
     const [submitted, setSubmitted] = React.useState();
     const [errors, setErrors] = React.useState({});
+    const [touched, setTouched] = React.useState(false);
 
     const changeHandler = (e) => {
         setPayload({ ...payload, [e.target.id]: e.target.value });
-        const body = combineStates(payload, values);
-        validateForm(body);
+        if (changeHandlerCounter > 1) {
+            validateForm(payload);
+        }
     };
 
-    const combineStates = (state1, state2) => {
-        return {
-            ...state1,
-            times: Array.from(state2),
-        };
+    const handleSelectionChange = (e) => {
+        setPayload({ ...payload, times: new Set(e.target.value.split(',')) });
     };
 
     const closeModel = () => {
-        setValues(new Set([]));
         setPayload({
             name: '',
             email: '',
             company: '',
+            times: '',
         });
-        setTimeout(onClose, 1000);
+        setTimeout(onClose, 2000);
     };
 
     const validateForm = (payload) => {
-        console.log('validateForm Payload: ', payload);
         let errors = {};
         let formIsValid = true;
 
@@ -96,7 +95,9 @@ export default function Register() {
         if (typeof payload.email !== 'undefined') {
             //regular expression for email validation
             const validateEmail = (value) =>
-                value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
+                value.match(
+                    /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/
+                );
             2;
             if (validateEmail(payload.email) === null) {
                 formIsValid = false;
@@ -109,24 +110,25 @@ export default function Register() {
             errors['company'] = '*Please enter your company.';
         }
 
-        if (payload.times.length === 0) {
+        if (!payload.times) {
             formIsValid = false;
             errors['times'] = '*Please select a time.';
         }
 
         setErrors(errors);
-        console.log('Form Validation Errors', errors);
         return formIsValid;
     };
 
     const submit = () => {
-        const body = combineStates(payload, values);
-        if (!validateForm(body)) {
+        setChangeHandlerCounter(changeHandlerCounter + 1);
+        if (!validateForm(payload)) {
+            console.log('Invalid Payload', payload);
         } else {
+            console.log('Payload to Send', payload);
             axios
                 .post(
                     'https://sheet.best/api/sheets/debffb9f-6efa-42ff-a917-7888d4e8a92e',
-                    body
+                    { ...payload, times: Array.from(payload.times) }
                 )
                 .then((response) => {
                     if (response.status === 200) {
@@ -140,6 +142,16 @@ export default function Register() {
         }
     };
 
+    const validateSelect = () => {
+        console.log('touched', touched);
+        if (touched) {
+            return 'valid';
+        } else if (errors.times && !touched) {
+            return 'invalid';
+        } else {
+            return 'valid';
+        }
+    };
     return (
         <>
             <Button onPress={onOpen} color="primary" className="w-full">
@@ -152,94 +164,99 @@ export default function Register() {
                 backdrop="blur"
                 isDismissable={false}
             >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Register Today
-                            </ModalHeader>
-                            <ModalBody>
-                                <Input
-                                    id="name"
-                                    label="Name"
-                                    placeholder="Enter your name"
-                                    type="text"
-                                    variant="bordered"
-                                    onChange={changeHandler}
-                                    validationState={
-                                        errors.name ? 'invalid' : ''
-                                    }
-                                    value={payload.name}
-                                    errorMessage={errors.name}
-                                />
-                                <Input
-                                    id="email"
-                                    label="Email"
-                                    placeholder="Enter your email"
-                                    type="email"
-                                    variant="bordered"
-                                    onChange={changeHandler}
-                                    validationState={
-                                        errors.email ? 'invalid' : ''
-                                    }
-                                    value={payload.email}
-                                    errorMessage={errors.email}
-                                />
-                                <Input
-                                    id="company"
-                                    label="Company"
-                                    placeholder="Enter your company"
-                                    type="text"
-                                    variant="bordered"
-                                    onChange={changeHandler}
-                                    validationState={
-                                        errors.company ? 'invalid' : ''
-                                    }
-                                    value={payload.company}
-                                    errorMessage={errors.company}
-                                />
-                                <Select
-                                    id="times"
-                                    label="Select times"
-                                    selectionMode="multiple"
-                                    placeholder="Select multiple times"
-                                    selectedKeys={values}
-                                    className="max-w-lg"
-                                    onSelectionChange={setValues}
-                                    color={errors.times ? 'danger' : 'default'}
-                                    errorMessage={errors.times}
-                                >
-                                    {timeOptions.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
-                                {/* <p className="text-small text-default-500">
-                                    Selected: {Array.from(values).join(', ')}
-                                </p> */}
-                                {/* <p className="text-small text-default-500">
-                                    Selected: {Array.from(values).join(', ')}
-                                </p> */}
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    color="danger"
-                                    variant="flat"
-                                    onPress={onClose}
-                                >
-                                    Close
-                                </Button>
-                                <Button color="primary" onPress={submit}>
-                                    Submit
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
+                {submitted ? (
+                    <ModalContent>
+                        <ModalBody className="bg-green-600">
+                            <p className="text-white">
+                                Successfully Registered
+                            </p>
+                        </ModalBody>
+                    </ModalContent>
+                ) : (
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalHeader className="flex flex-col gap-1">
+                                    Register Today
+                                </ModalHeader>
+                                <ModalBody>
+                                    <Input
+                                        id="name"
+                                        label="Name"
+                                        placeholder="Enter your name"
+                                        type="text"
+                                        variant="bordered"
+                                        onChange={changeHandler}
+                                        validationState={
+                                            errors.name ? 'invalid' : ''
+                                        }
+                                        value={payload.name}
+                                        errorMessage={errors.name}
+                                    />
+                                    <Input
+                                        id="email"
+                                        label="Email"
+                                        placeholder="Enter your email"
+                                        type="email"
+                                        variant="bordered"
+                                        onChange={changeHandler}
+                                        validationState={
+                                            errors.email ? 'invalid' : ''
+                                        }
+                                        value={payload.email}
+                                        errorMessage={errors.email}
+                                    />
+                                    <Input
+                                        id="company"
+                                        label="Company"
+                                        placeholder="Enter your company"
+                                        type="text"
+                                        variant="bordered"
+                                        onChange={changeHandler}
+                                        validationState={
+                                            errors.company ? 'invalid' : ''
+                                        }
+                                        value={payload.company}
+                                        errorMessage={errors.company}
+                                    />
+                                    <Select
+                                        id="times"
+                                        label="Select times"
+                                        selectionMode="multiple"
+                                        placeholder="Select multiple times"
+                                        className="max-w-lg"
+                                        errorMessage={errors.times}
+                                        onChange={handleSelectionChange}
+                                        onClose={() => setTouched(true)}
+                                        validationState={validateSelect()}
+                                    >
+                                        {timeOptions.map((option) => (
+                                            <SelectItem
+                                                key={option.value}
+                                                value={option.value}
+                                            >
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                    {submitted ? 'Form submitted' : null}
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button
+                                        color="default"
+                                        variant="flat"
+                                        onPress={onClose}
+                                    >
+                                        Close
+                                    </Button>
+                                    <Button color="primary" onPress={submit}>
+                                        Submit
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                )}
             </Modal>
         </>
     );
