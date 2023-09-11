@@ -166,10 +166,8 @@ export default function Register() {
             >
                 {submitted ? (
                     <ModalContent>
-                        <ModalBody className="bg-green-600">
-                            <p className="text-white">
-                                Successfully Registered
-                            </p>
+                        <ModalBody>
+                            <p className="p-4">Successfully Registered!</p>
                         </ModalBody>
                     </ModalContent>
                 ) : (
