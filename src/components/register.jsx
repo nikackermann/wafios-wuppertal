@@ -59,7 +59,7 @@ export default function Register() {
 
     const changeHandler = (e) => {
         setPayload({ ...payload, [e.target.id]: e.target.value });
-        if (changeHandlerCounter > 1) {
+        if (changeHandlerCounter > 0) {
             validateForm(payload);
         }
     };
