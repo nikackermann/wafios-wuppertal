@@ -1,36 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/card';
+import Header from '../components/header';
+import Content from '../components/content';
+import bg from '../images/wuppertal-machine.svg';
+import { BackgroundImage } from '../components/background-image';
 import Register from '../components/register';
-import Banner from '../components/banner';
-import { Image } from 'astro:assets';
-import Logo from '../images/logo.jpg';
 ---
 
 <Layout title="Wuppertal Fastener Days">
-    <main>
-        <!-- <Banner /> -->
-        <div class="mx-auto max-w-3xl p-2">
-            <Image
-                src={Logo}
-                alt="Wafios Logo"
-                width={225}
-                class="m-auto mb-8 mt-4"
-            />
-            <div class="text-center mx-auto flex-shrink-0 mb-4">
-                <h1 class="text-2xl font-bold">
-                    Wuppertal Fastener Days - Live Broadcast
-                </h1>
-                <p class="mb-2">100 YEARS FUTURE COLD FORMING TECHNOLOGY</p>
-                <p class="mb-4">
-                    Experience innovative forming technology with the following
-                    machines live in operation
-                </p>
-            </div>
-            <div class="mx-auto">
-                <div class=""><Card /></div>
-                <div><Register client:visible /></div>
-            </div>
+    <!-- <BackgroundImage className="-bottom-14 -top-36"> -->
+    <main
+        class='min-h-screen justify-center bg-cover bg-center bg-no-repeat bg-[url("../../public/machine.svg")]'
+    >
+        <Header client:visible />
+        <div class="pt-2 md:pt-20">
+            <Content />
         </div>
+        <div class="mx-auto max-w-5xl px-4 mb-6 mt-6 block md:hidden">
+            <Register client:visible />
+        </div>
+        <Card />
     </main>
+    <!-- </BackgroundImage> -->
 </Layout>

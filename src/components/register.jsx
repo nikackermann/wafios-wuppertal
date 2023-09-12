@@ -6,39 +6,38 @@ import {
     ModalFooter,
     Button,
     useDisclosure,
-    Checkbox,
     Input,
-    Link,
 } from '@nextui-org/react';
-import { Chip } from '@nextui-org/react';
 import React from 'react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { useState } from 'react';
 import axios from 'axios';
 
+// Translate German times to local times.
+
 const timeOptions = [
     {
-        label: 'Sept 20 @ 4:00 PM',
+        label: 'Sept 20 @ 4:00 PM -- HC 6-75A',
         value: '1',
         description: 'Sept 20th at 4:00 PM',
     },
     {
-        label: 'Sept 20 @ 4:30 PM',
+        label: 'Sept 20 @ 4:30 PM -- H 650',
         value: '2',
         description: 'Sept 20th at 4:30 PM',
     },
     {
-        label: 'Sept 20 @ 5:00 PM',
+        label: 'Sept 20 @ 5:00 PM -- HT 5-40',
         value: '3',
         description: 'Sept 20th at 5:00 PM',
     },
     {
-        label: 'Sept 21 @ 4:00 PM',
+        label: 'Sept 21 @ 4:00 PM -- AF 141',
         value: '4',
         description: 'Sept 20th at 5:00 PM',
     },
     {
-        label: 'Sept 21 @ 4:30 PM',
+        label: 'Sept 21 @ 4:30 PM -- HN 4-80',
         value: '5',
         description: 'Sept 20th at 4:30 PM',
     },
@@ -154,7 +153,11 @@ export default function Register() {
     };
     return (
         <>
-            <Button onPress={onOpen} color="primary" className="w-full">
+            <Button
+                onPress={onOpen}
+                color="primary"
+                className="w-full lg:w-fit"
+            >
                 Register
             </Button>
             <Modal
