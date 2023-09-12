@@ -12,9 +12,12 @@ import { Container } from '../components/container';
 
 export default function CardComponent() {
     return (
-        <Container className="flex flex-col gap-4 lg:flex-row">
+        <Container className="flex flex-col gap-4 lg:flex-row bg-[url('src/images/machine.svg')] bg-contain bg-center bg-no-repeat h-45 text-center">
             <div className="lg:w-1/2 ">
-                <Card className="bg-gray-200 h-[250px]">
+                <Card
+                    isBlurred
+                    className="bg-background/60 dark:bg-default-100/50 h-[250px]"
+                >
                     <CardHeader>
                         <div className="m-auto text-center">
                             <p>Day 1 - Sept. 20th</p>
@@ -62,7 +65,10 @@ export default function CardComponent() {
                 </Card>
             </div>
             <div className="lg:w-1/2">
-                <Card className="bg-gray-200 h-[250px]">
+                <Card
+                    isBlurred
+                    className="border-none bg-background/60 dark:bg-default-100/50 h-[250px]"
+                >
                     <CardHeader>
                         <div className="m-auto text-center">
                             <p>Day 2 - Sept. 21st</p>
