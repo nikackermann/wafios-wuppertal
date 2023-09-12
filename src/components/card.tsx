@@ -12,7 +12,7 @@ import { Container } from '../components/container';
 
 export default function CardComponent() {
     return (
-        <Container className="flex flex-col gap-4 lg:flex-row bg-[url('src/images/machine.svg')] bg-contain bg-center bg-no-repeat h-45 text-center">
+        <Container className="flex flex-col gap-10 lg:flex-row bg-[url('src/images/machine.svg')] bg-contain bg-center bg-no-repeat h-45 text-center">
             <div className="lg:w-1/2 ">
                 <Card
                     isBlurred
