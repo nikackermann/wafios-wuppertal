@@ -6,6 +6,7 @@ import {
     TableBody,
     TableRow,
     TableCell,
+    Chip,
 } from '@nextui-org/react';
 
 import { Container } from '../components/container';
@@ -20,7 +21,13 @@ export default function CardComponent() {
                 >
                     <CardHeader>
                         <div className="m-auto text-center">
-                            <p>Day 1 - Sept. 20th</p>
+                            <Chip
+                                color="warning"
+                                variant="bordered"
+                                className="mr-4"
+                            >
+                                Day 1
+                            </Chip>
                         </div>
                     </CardHeader>
                     <Divider />
@@ -71,7 +78,13 @@ export default function CardComponent() {
                 >
                     <CardHeader>
                         <div className="m-auto text-center">
-                            <p>Day 2 - Sept. 21st</p>
+                            <Chip
+                                color="warning"
+                                variant="bordered"
+                                className="mr-4"
+                            >
+                                Day 2
+                            </Chip>
                         </div>
                     </CardHeader>
                     <Divider />
